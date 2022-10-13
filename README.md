@@ -14,6 +14,8 @@ Para esse projeto será necessário:
 ```
 Python: 3.10.5
 Flask: 2.0.2
+SQLAlchemy: 1.4.41
+MySQL : 8.0.x
 Bootstrap: 5.1.x
 ``` 
 
@@ -28,11 +30,6 @@ python -m venv <nome_ambiente_virtual>
 
 Após criar o ambiente virtual e devidamento ativado, é necessário instalar as dependências:
 
-```
-pip install flask, python-dotenv
-```
-
-ou alternativamente:
 ```
 pip install -r requirements.txt
 ```
