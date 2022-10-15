@@ -1,6 +1,6 @@
 from MySQLdb import Timestamp
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
-from helpers import image_recovery, delete_file
+from helpers import image_recovery, delete_file, GameForm
 from mgc import app, db
 from models import Games, Users
 
@@ -12,18 +12,22 @@ def index():
     games = Games.query.order_by(Games.id)
     return render_template("list.html", title='Games', games=games)
 
-
 @app.route("/new")
 def new():
     if 'user_active' not in session or session['user_active'] is None:
         return redirect(url_for('login', next=url_for('new')))
-    return render_template("new.html", title="New Game")
+    form = GameForm()
+    return render_template("new.html", title="New Game", form=form)
 
 @app.route("/create", methods=["POST"])
 def create():
-    name = request.form["name"]
-    category = request.form["category"]
-    console = request.form["console"]
+    form = GameForm(request.form)
+    if not form.validate_on_submit():
+        return redirect(url_for('new'))
+
+    name = form.name.data
+    category = form.category.data
+    console = form.console.data
     
     game = Games.query.filter_by(name=name).first()
     if game:
@@ -45,23 +49,31 @@ def edit(id):
     if 'user_active' not in session or session['user_active'] is None:
         return redirect(url_for('login', next=url_for('edit')))
     game = Games.query.filter_by(id=id).first()
+    form = GameForm()
+    form.name.data = game.name
+    form.category.data = game.category
+    form.console.data = game.console
     game_cover = image_recovery(id)
-    return render_template("edit.html", title="Editing Game", game=game, game_cover=game_cover)
+    return render_template("edit.html", title="Editing Game", id=id, game_cover=game_cover, form=form)
 
 @app.route('/update', methods=['POST'])
 def update():
-    game = Games.query.filter_by(id=request.form['id']).first()
-    game.name = request.form['name']
-    game.category = request.form['category']
-    game.console = request.form['console']
-    db.session.add(game)
-    db.session.commit()
+    form = GameForm(request.form)
 
-    file = request.files['file']
-    upload_path = app.config['UPLOAD_PATH']
-    timestamp = time.time()
-    delete_file(game.id)
-    file.save(f'{upload_path}/cover_{game.id}-{timestamp}.jpg')
+    if form.validate_on_submit():
+        game = Games.query.filter_by(id=request.form['id']).first()
+        game.name = form.name.data
+        game.category = form.category.data
+        game.console = form.console.data
+        
+        db.session.add(game)
+        db.session.commit()
+
+        file = request.files['file']
+        upload_path = app.config['UPLOAD_PATH']
+        timestamp = time.time()
+        delete_file(game.id)
+        file.save(f'{upload_path}/cover_{game.id}-{timestamp}.jpg')
 
     return redirect(url_for('index'))
 
