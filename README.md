@@ -33,8 +33,6 @@ Após criar o ambiente virtual e devidamento ativado, é necessário instalar as
 pip install -r requirements.txt
 ```
 
-Termine com um exemplo de como obter dados do sistema ou como usá-los para uma pequena demonstração.
-
 Com tudo devidamente instalador, primeiro é necessário criar o banco de dados com o comando:
 ```
 python setup_db.py
