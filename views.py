@@ -1,11 +1,16 @@
-from flask import render_template, redirect, request, session, flash, url_for
+from MySQLdb import Timestamp
+from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
+from helpers import image_recovery, delete_file
 from mgc import app, db
 from models import Games, Users
+
+import time
+
 
 @app.route("/")
 def index():
     games = Games.query.order_by(Games.id)
-    return render_template("game_list.html", title='Games', games=games)
+    return render_template("list.html", title='Games', games=games)
 
 
 @app.route("/new")
@@ -28,6 +33,11 @@ def create():
     db.session.add(new_game)
     db.session.commit()
 
+    file = request.files['file']
+    upload_path = app.config['UPLOAD_PATH']
+    timestamp = time.time()
+    file.save(f'{upload_path}/cover_{new_game.id}-{timestamp}.jpg')
+
     return redirect(url_for('index'))
 
 @app.route("/edit/<int:id>")
@@ -35,7 +45,8 @@ def edit(id):
     if 'user_active' not in session or session['user_active'] is None:
         return redirect(url_for('login', next=url_for('edit')))
     game = Games.query.filter_by(id=id).first()
-    return render_template("edit.html", title="Editing Game", game=game)
+    game_cover = image_recovery(id)
+    return render_template("edit.html", title="Editing Game", game=game, game_cover=game_cover)
 
 @app.route('/update', methods=['POST'])
 def update():
@@ -45,6 +56,13 @@ def update():
     game.console = request.form['console']
     db.session.add(game)
     db.session.commit()
+
+    file = request.files['file']
+    upload_path = app.config['UPLOAD_PATH']
+    timestamp = time.time()
+    delete_file(game.id)
+    file.save(f'{upload_path}/cover_{game.id}-{timestamp}.jpg')
+
     return redirect(url_for('index'))
 
 @app.route("/delete/<int:id>")
@@ -53,6 +71,8 @@ def delete(id):
         return redirect(url_for('login'))
     Games.query.filter_by(id=id).delete()
     db.session.commit()
+
+    delete_file(id)
     flash('Successfully Delete!')
     return redirect(url_for('index'))
 
@@ -82,3 +102,6 @@ def logout():
     flash('Successful logout!')
     return redirect(url_for('index'))
 
+@app.route('/uploads/<file_name>')
+def image(file_name):
+    return send_from_directory('uploads', file_name)

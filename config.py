@@ -12,3 +12,5 @@ SQLALCHEMY_DATABASE_URI = \
         server = 'localhost',
         database = 'my_game_collection'
     )
+
+UPLOAD_PATH = os.path.dirname(os.path.abspath(__file__)) + '/uploads'
