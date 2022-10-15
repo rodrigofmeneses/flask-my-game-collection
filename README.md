@@ -14,7 +14,6 @@ Para esse projeto será necessário:
 ```
 Python: 3.10.5
 Flask: 2.0.2
-SQLAlchemy: 1.4.41
 MySQL : 8.0.x
 Bootstrap: 5.1.x
 ``` 
@@ -44,21 +43,4 @@ python setup_db.py
 Então para rodar o programa basta utilizar o comando:
 ```
 flask run
-```
-
-### Informações
-
-Lista de endpoints implementados:
-
- - Views:
-```
-/       : Visualiza os jogos cadastrados.
-/login  : Acessa o sistema como um usuário.
-/logout : Volta para o estado de visitante do sistema.
-/new    : Cadastra um jogo. obs: Apenas usuários podem cadastrar
-```
- - Administrativas
-```
-/create         : Insere o jogo cadastrado no Banco de dados e na visualização.
-/authenticate   : Autentica o login do usuário no sistema.
 ```
