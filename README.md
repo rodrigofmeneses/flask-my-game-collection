@@ -27,7 +27,10 @@ Com o Python instalado, é recomendado a criação de um ambiente virtual:
 python -m venv <nome_ambiente_virtual>
 ```
 
-Após criar o ambiente virtual e devidamento ativado, é necessário instalar as dependências:
+
+Após criar o ambiente virtual é necessário ativa-lo, ```.venv\Scripts\activate``` no terminal do Windows, ou ```source bin/activate``` no linux.
+
+Feito isso, agora é necessário instalar as dependências:
 
 ```
 pip install -r requirements.txt
@@ -45,4 +48,4 @@ flask run
 
 # Atenção
 
-Verifique as credenciais do Banco de dados!
+Verifique as credenciais do Banco de dados no ```.env``` e as credencias dos usuários cadastrados em ```setup_db.py```!
