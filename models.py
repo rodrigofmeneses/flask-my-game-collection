@@ -10,9 +10,9 @@ class Games(db.Model):
         return f'<Name {self.name}>' 
 
 class Users(db.Model):
-    username = db.Column(db.String(8), primary_key=True)
     name = db.Column(db.String(50), nullable=False)
+    username = db.Column(db.String(8), primary_key=True)
     password = db.Column(db.String(100), nullable=False)
 
     def __repr__(self) -> str:
-        return f'<Name {super.name}>' 
+        return f'<Name {self.name}>' 

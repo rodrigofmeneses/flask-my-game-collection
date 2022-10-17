@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import errorcode
+from flask_bcrypt import generate_password_hash
 
 import os
 from dotenv import load_dotenv
@@ -37,8 +38,8 @@ TABLES['Games'] = ('''
 
 TABLES['Users'] = ('''
       CREATE TABLE `users` (
-      `username` varchar(8) NOT NULL,
       `name` varchar(50) NOT NULL,
+      `username` varchar(8) NOT NULL,
       `password` varchar(100) NOT NULL,
       PRIMARY KEY (`username`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
@@ -57,10 +58,10 @@ for tabela_nome in TABLES:
             print('OK')
 
 # inserindo usuarios
-usuario_sql = 'INSERT INTO users (username, name, password) VALUES (%s, %s, %s)'
+usuario_sql = 'INSERT INTO users (name, username, password) VALUES (%s, %s, %s)'
 usuarios = [
-      ("rfm", "Rodrigo Meneses", "1234"),
-      ("maregs", "Marta Regina", "4321"),
+      ("Rodrigo Meneses", "rfm", generate_password_hash("1234").decode('utf-8')),
+      ("Marta Regina","maregs", generate_password_hash("4321").decode('utf-8')),
 ]
 cursor.executemany(usuario_sql, usuarios)
 

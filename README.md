@@ -42,3 +42,7 @@ Então para rodar o programa basta utilizar o comando:
 ```
 flask run
 ```
+
+# Atenção
+
+Verifique as credenciais do Banco de dados!

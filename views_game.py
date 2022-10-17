@@ -1,8 +1,7 @@
-from MySQLdb import Timestamp
 from flask import render_template, redirect, request, session, flash, url_for, send_from_directory
 from helpers import image_recovery, delete_file, GameForm
 from mgc import app, db
-from models import Games, Users
+from models import Games
 
 import time
 
@@ -74,7 +73,6 @@ def update():
         timestamp = time.time()
         delete_file(game.id)
         file.save(f'{upload_path}/cover_{game.id}-{timestamp}.jpg')
-
     return redirect(url_for('index'))
 
 @app.route("/delete/<int:id>")
@@ -86,32 +84,6 @@ def delete(id):
 
     delete_file(id)
     flash('Successfully Delete!')
-    return redirect(url_for('index'))
-
-@app.route("/login")
-def login():
-    next = request.args.get('next')
-    return render_template("login.html", next=next)
-
-
-@app.route("/auth", methods=["POST"])
-def authenticate():
-    user = Users.query.filter_by(username=request.form['user']).first()
-    if user:
-        if request.form["password"] == user.password:
-            session['user_active'] = user.username
-            flash(f'Welcome {user.username}. Successfully login!')
-            next_page = request.form['next']
-            if next_page != 'None':
-                return redirect(next_page)
-            return redirect(url_for('index'))
-    flash(f'Failed to login')
-    return redirect(url_for('login'))
-
-@app.route('/logout')
-def logout():
-    session['user_active'] = None
-    flash('Successful logout!')
     return redirect(url_for('index'))
 
 @app.route('/uploads/<file_name>')
