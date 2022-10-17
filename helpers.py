@@ -1,7 +1,7 @@
 import os
+from mgc import app
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, validators
-from mgc import app
 
 
 class GameForm(FlaskForm):
@@ -14,22 +14,25 @@ class GameForm(FlaskForm):
     console = StringField(
         "Console", [validators.DataRequired(), validators.length(min=1, max=20)]
     )
-    save = SubmitField('Save')
+    save = SubmitField("Save")
+
 
 class UserForm(FlaskForm):
     username = StringField(
-        'User Name', [validators.DataRequired(), validators.length(min=1, max=8)]
+        "User Name", [validators.DataRequired(), validators.length(min=1, max=8)]
     )
     password = PasswordField(
-        'Password', [validators.DataRequired(), validators.length(min=1, max=100)]
+        "Password", [validators.DataRequired(), validators.length(min=1, max=100)]
     )
-    login = SubmitField('Login')
+    login = SubmitField("Login")
+
 
 def image_recovery(id):
     for filename in os.listdir(app.config["UPLOAD_PATH"]):
         if f"cover_{id}" in filename:
             return filename
     return "default_cover.jpg"
+
 
 def delete_file(id):
     filename = image_recovery(id)
